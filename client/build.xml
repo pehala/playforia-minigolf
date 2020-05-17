@@ -1,368 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Client" basedir="." default="dist">
-  <property file="build.properties" />
-  <property name="dir" value="." />
-  <property name="source.dir" value="src" />
-  <property name="class.dir" value="classes" />
-  <property name="lib.dir" value="../lib" />
-  <property name="resource.dir" value="res" />
-  <property name="build.dir" value="build" />
-  <property name="tools.dir" value="../tools" />
-  <property name="userdocs.dir" value="onlinehelp" />
-  <property name="javadocs.dir" value="yk-${build.version}-javadocs" />
-  <property name="jarname" value="Client-${build.version}.jar" />
-  <property name="main.class" value="org.moparforia.client.Launcher" />
-  <property name="copyright.blurb" value="Maintained by Philipp v. K. - 2020" />
-  <property environment="env" />
-  <!-- set the operating system test properties -->
-  <condition property="isMac">
-    <os family="mac" />
-  </condition>
-  <condition property="isWindows">
-    <os family="windows" />
-  </condition>
-  <condition property="isUnix">
-    <os family="unix" />
-  </condition>
-  <path id="project.class.path">
-    <pathelement location="${class.root}" />
-    <fileset dir="${lib.dir}">
-      <include name="*.jar" />
-    </fileset>
-  </path>
-  <!-- Windows: install your own OS-specific launch4j, and change this path -->
-  <property name="launch4j.dir" location="../launch4j" />
-  <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-  <!-- Oracle Java bundler OSX -->
-  <taskdef name="bundleapp" classpath="../lib/appbundler-1.0ea.jar" classname="com.oracle.appbundler.AppBundlerTask" />
-  <target name="clean" description="Removes classes, temporary directories, and targets">
-    <delete dir="${class.dir}" />
-    <delete dir="${build.dir}" />
-    <delete dir="${javadocs.dir}" />
-    <delete file="${javadocs.dir}.zip" />
-    <delete file="${jarname}" />
-    <delete file="${resource.dir}/localization/application.properties" />
-    <delete file="Client-${build.version}.jar" />
-    <delete file="Client-${build.version}.dmg" />
-    <delete dir="Minigolf.app" />
-    <delete file="Client-${build.version}.exe" />
-    <delete file="makeexe.xml" />
-  </target>
-  <target name="prepare" depends="clean" description="Sets up application info in resources">
-    <copy file="templates/application.properties.template" tofile="${resource.dir}/localization/application.properties">
-      <filterset>
-        <filter token="APPLICATION_NAME" value="Client" />
-        <filter token="ICON_PATH" value="icons/playforia.png" />
-        <filter token="BUILD_VERSION" value="${build.version}" />
-        <filter token="BUILD_NUMBER" value="${build.number}" />
-        <filter token="COPYRIGHT" value="${copyright.blurb}" />
-      </filterset>
-    </copy>
-    <!-- Wrapper details for making a Windows exe -->
-    <copy file="templates/makeexe.xml.template" tofile="makeexe.xml">
-      <filterset>
-        <filter token="VERSION" value="${build.version}" />
-        <filter token="BUILD_NUMBER" value="${build.number}" />
-        <filter token="APP_NAME" value="Client" />
-        <filter token="JAR_NAME" value="Client-${build.version}.jar" />
-	<filter token="COPYRIGHT" value="${copyright.blurb}" />
-      </filterset>
-    </copy>
-  </target>
-  <target name="compile" depends="prepare" description="Compiles all Java classes">
-    <mkdir dir="${class.dir}" />
-    <javac srcdir="${source.dir}" destdir="${class.dir}" debug="on" optimize="off" deprecation="off" classpathref="project.class.path" source="1.8" target="1.8" encoding="utf8">
-      <compilerarg value="-XDignore.symbol.file" />
-    </javac>
-  </target>
-  <target name="javadoc" description="Creates javadocs">
-    <mkdir dir="${javadocs.dir}" />
-    <javadoc sourcepath="${source.dir}" destdir="${javadocs.dir}" classpathref="project.class.path">
-      <fileset dir="${source.dir}" includes="**/*.java" />
-    </javadoc>
-    <zip destfile="${javadocs.dir}.zip">
-      <zipfileset dir="${javadocs.dir}" />
-    </zip>
-  </target>
-  <target name="userdoc" description="Makes a zip file of online help">
-    <zip destfile="${userdocs.dir}.zip">
-      <fileset dir="${dir}">
-        <include name="${userdocs.dir}/**" />
-      </fileset>
-    </zip>
-  </target>
-  <target name="jar" description="Creates jar" depends="compile,userdoc">
-    <mkdir dir="${build.dir}" />
-    <unzip dest="${build.dir}">
-      <patternset>
-        <include name="**/*" />
-        <exclude name="META-INF/*" />
-      </patternset>
-      <fileset dir="${lib.dir}">
-        <include name="*.jar" />
-      </fileset>
-    </unzip>
-    <copy todir="${build.dir}">
-      <fileset dir="${class.dir}" includes="**" />
-      <fileset dir="${resource.dir}" />
-    </copy>
-    <!-- rename the help docs so they can be found in the jar -->
-    <move file="${userdocs.dir}.zip" tofile="${build.dir}/onlinehelp.zip" />
-    <jar destfile="${jarname}" basedir="${build.dir}">
-      <manifest>
-        <attribute name="Main-Class" value="${main.class}" />
-      </manifest>
-      <fileset includes="**/*" dir="${resource.dir}" />
-    </jar>
-  </target>
-  <target name="source" description="Bundles up the main directory">
-    <zip destfile="../Client-${build.version}-source.zip">
-      <fileset dir="${dir}">
-        <include name="**/*" />
-      </fileset>
-    </zip>
-    <move file="../yk-${build.version}-source.zip" todir="${dir}" />
-  </target>
-  <target name="win" depends="jar" description="Run launch4j on the config file to create Windows exe">
-    <launch4j configFile="makeexe.xml" fileVersion="${build.version}.0" txtFileVersion="${build.version}.0" productVersion="${build.version}.0" />
-  </target>
-  <target name="osx-bundled" depends="jar" if="isMac">
-    <bundleapp 
-        jvmrequired="1.8"
-        outputdirectory="."
-        name="Minigolf"
-        displayname="Minigolf Client"
-        executableName="Client"
-        identifier="${main.class}"
-        shortversion="${build.version}"
-        version="${build.version}"
-        icon="res/icons/playforia.icns"
-        mainclassname="${main.class}"
-        copyright="${copyright.blurb}">
+<project default="compile" basedir=".">
+        <property name="src" location="src" />
+        <property name="build" location="bin" />
+        <property name="res" location="res" />
+        <property name="jar" location="client.jar" />
 
-	<runtime dir="${env.JAVA_HOME}" />
-        <classpath file="Client-${build.version}.jar"/>  
-        <arch name="x86_64"/>
+        <target name="compile">
+            <delete file="${jar}" />
+            <delete dir="${build}"/>
+            <mkdir dir="${build}"/>
 
-        <bundledocument extensions="ykp"
-          icon="res/icons/playforia.icns"
-          name="Client Project"
-          role="editor">
-        </bundledocument> 
+            <javac srcdir="${src}" destdir="${build}" debug="on" encoding="utf8">
+              <compilerarg value="-XDignore.symbol.file" />
+                <classpath>
+                    <pathelement path="${java.class.path}/"/>
+                </classpath>
+            </javac>
 
-        <!-- Workaround as com.apple.mrj.application.apple.menu.about.name property may no longer work -->
-        <option value="-Xdock:name=YK"/>
-        <option value="-Dapple.laf.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
-        <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.mrj.application.apple.menu.about.name=${bundle.name}"/>
-        <option value="-Dcom.apple.smallTabs=true"/>
-        <option value="-Dfile.encoding=UTF-8"/>
+            <jar basedir="${build}" destfile="${jar}">
+                <manifest>
+                        <attribute name="Main-Class" value="org.moparforia.client.Launcher" />
+                </manifest>
+                <fileset includes="**/*" dir="${res}" />
+            </jar>
+        </target>
 
-        <option value="-Xmx512M" name="Xmx"/>
+        <target name="run" depends="compile">
+                <java classname="org.moparforia.client.Launcher" fork="true">
+                        <jvmarg value="-Xms128m" />
+                        <jvmarg value="-Xmx512m" />
+                        <arg value="${settings}" />
+                        <classpath>
+                                <pathelement path="${jar}/" />
+                        </classpath>
+                </java>
+        </target>
 
-        <!-- helpbook hack -->
-        <plistentry key="CFBundleHelpBookFolder" value="Help"/>
-	<plistentry key="CFBundleHelpBookName" value="Client Help"/>
+        <target name="clean">
+                <delete file="${jar}" />
+                <delete dir="${build}"/>
+        </target>
 
-	<argument value="-lang"/>
-	<argument value="en_US"/>
-	<argument value="-server"/>
-	<argument value="35.209.2.60"/>
-
-    </bundleapp>
-    <!-- first hack at helpbooking -->
-    <copy todir="Minigolf.app/Contents/Resources/Help/">
-      <fileset dir="onlinehelp" includes="**/*" />
-    </copy>
-    <copy file="${resource.dir}/libHelpBookJNI.jnilib" todir="Minigolf.app/Contents/Java/" />
-    <!-- make a disk image -->
-    <exec executable="hdiutil">
-      <arg value="create" />
-      <arg value="-srcfolder" />
-      <arg value="Minigolf.app" />
-      <arg value="Client-${build.version}-bundled.dmg" />
-    </exec>
-  </target>
-  <target name="osx-bundled2" depends="jar" if="isUnix">
-    <bundleapp 
-        jvmrequired="1.8"
-        outputdirectory="."
-        name="Minigolf"
-        displayname="Minigolf Client"
-        executableName="Client"
-        identifier="${main.class}"
-        shortversion="${build.version}"
-        version="${build.version}"
-        icon="res/icons/playforia.icns"
-        mainclassname="${main.class}"
-        copyright="${copyright.blurb}">
-
-	<runtime dir="../jdk8u252-b09-jre/Contents/Home/" />
-        <classpath file="Client-${build.version}.jar"/>  
-        <arch name="x86_64"/>
-
-        <bundledocument extensions="ykp"
-          icon="res/icons/playforia.icns"
-          name="Client Project"
-          role="editor">
-        </bundledocument> 
-
-        <!-- Workaround as com.apple.mrj.application.apple.menu.about.name property may no longer work -->
-        <option value="-Xdock:name=YK"/>
-        <option value="-Dapple.laf.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
-        <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.mrj.application.apple.menu.about.name=${bundle.name}"/>
-        <option value="-Dcom.apple.smallTabs=true"/>
-        <option value="-Dfile.encoding=UTF-8"/>
-
-        <option value="-Xmx512M" name="Xmx"/>
-
-        <!-- helpbook hack -->
-        <plistentry key="CFBundleHelpBookFolder" value="Help"/>
-	<plistentry key="CFBundleHelpBookName" value="Client Help"/>
-
-	<argument value="-lang"/>
-	<argument value="en_US"/>
-	<argument value="-server"/>
-	<argument value="35.209.2.60"/>
-
-    </bundleapp>
-    <!-- first hack at helpbooking -->
-    <copy todir="Minigolf.app/Contents/Resources/Help/">
-      <fileset dir="onlinehelp" includes="**/*" />
-    </copy>
-    <copy file="${resource.dir}/libHelpBookJNI.jnilib" todir="Minigolf.app/Contents/Java/" />
-    <!-- make a disk image -->
-    <exec executable="/bin/bash">
-	    <arg value="${tools.dir}/build_img.sh" />
-	    <arg value="${build.version}" />
-    </exec>
-  </target>
-  <target name="osx" depends="jar" if="isMac">
-    <bundleapp 
-        jvmrequired="1.8"
-        outputdirectory="."
-        name="Minigolf"
-        displayname="Minigolf Client"
-        executableName="Client"
-        identifier="${main.class}"
-        shortversion="${build.version}"
-        version="${build.version}"
-        icon="res/icons/playforia.icns"
-        mainclassname="${main.class}"
-        copyright="${copyright.blurb}">
-
-        <classpath file="Client-${build.version}.jar"/>  
-        <arch name="x86_64"/>
-
-        <bundledocument extensions="ykp"
-          icon="res/icons/playforia.icns"
-          name="Client Project"
-          role="editor">
-        </bundledocument> 
-
-        <!-- Workaround as com.apple.mrj.application.apple.menu.about.name property may no longer work -->
-        <option value="-Xdock:name=YK"/>
-        <option value="-Dapple.laf.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
-        <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.mrj.application.apple.menu.about.name=${bundle.name}"/>
-        <option value="-Dcom.apple.smallTabs=true"/>
-        <option value="-Dfile.encoding=UTF-8"/>
-
-        <option value="-Xmx512M" name="Xmx"/>
-
-        <!-- helpbook hack -->
-        <plistentry key="CFBundleHelpBookFolder" value="Help"/>
-        <plistentry key="CFBundleHelpBookName" value="Client Help"/>
-
-	<argument value="-lang"/>
-	<argument value="en_US"/>
-	<argument value="-server"/>
-	<argument value="35.209.2.60"/>
-
-    </bundleapp>
-    <!-- first hack at helpbooking -->
-    <copy todir="Minigolf.app/Contents/Resources/Help/">
-      <fileset dir="onlinehelp" includes="**/*" />
-    </copy>
-    <copy file="${resource.dir}/libHelpBookJNI.jnilib" todir="Minigolf.app/Contents/Java/" />
-    <!-- make a disk image -->
-    <exec executable="hdiutil" if="isMac">
-      <arg value="create" />
-      <arg value="-srcfolder" />
-      <arg value="Minigolf.app" />
-      <arg value="Minigolf-MacOS-Standalone-${build.version}.dmg" />
-    </exec>
-  </target>
-  <target name="osx2" depends="jar" if="isUnix">
-    <bundleapp 
-        jvmrequired="1.8"
-        outputdirectory="."
-        name="Minigolf"
-        displayname="Minigolf Client"
-        executableName="Client"
-        identifier="${main.class}"
-        shortversion="${build.version}"
-        version="${build.version}"
-        icon="res/icons/playforia.icns"
-        mainclassname="${main.class}"
-        copyright="${copyright.blurb}">
-
-        <classpath file="Client-${build.version}.jar"/>  
-        <arch name="x86_64"/>
-
-        <bundledocument extensions="ykp"
-          icon="res/icons/playforia.icns"
-          name="Client Project"
-          role="editor">
-        </bundledocument> 
-
-        <!-- Workaround as com.apple.mrj.application.apple.menu.about.name property may no longer work -->
-        <option value="-Xdock:name=YK"/>
-        <option value="-Dapple.laf.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.macos.use-file-dialog-packages=true"/>
-        <option value="-Dcom.apple.macos.useScreenMenuBar=true"/>
-        <option value="-Dcom.apple.mrj.application.apple.menu.about.name=${bundle.name}"/>
-        <option value="-Dcom.apple.smallTabs=true"/>
-        <option value="-Dfile.encoding=UTF-8"/>
-
-        <option value="-Xmx512M" name="Xmx"/>
-
-        <!-- helpbook hack -->
-        <plistentry key="CFBundleHelpBookFolder" value="Help"/>
-        <plistentry key="CFBundleHelpBookName" value="Client Help"/>
-
-	<argument value="-lang"/>
-	<argument value="en_US"/>
-	<argument value="-server"/>
-	<argument value="35.209.2.60"/>
-
-    </bundleapp>
-    <!-- first hack at helpbooking -->
-    <copy todir="Minigolf.app/Contents/Resources/Help/">
-      <fileset dir="onlinehelp" includes="**/*" />
-    </copy>
-    <copy file="${resource.dir}/libHelpBookJNI.jnilib" todir="Minigolf.app/Contents/Java/" />
-    <!-- make a disk image -->
-    <exec executable="/bin/bash">
-	    <arg value="${tools.dir}/build_img.sh" />
-	    <arg value="${build.version}" />
-    </exec>
-  </target>
-  <target name="dist" depends="osx,osx2,win" />
-  <target name="plugin-jar" description="Creates Tokenizer plugin jar">
-    <jar destfile="yk-plugin.jar">
-      <fileset dir="classes">
-        <include name="edu/harvard/wcfia/yoshikoder/document/tokenizer/Tokenizer.class" />
-        <include name="edu/harvard/wcfia/yoshikoder/document/tokenizer/TokenizationException.class" />
-        <include name="edu/harvard/wcfia/yoshikoder/document/tokenizer/Token.class" />
-        <include name="edu/harvard/wcfia/yoshikoder/document/tokenizer/TokenImpl.class" />
-        <include name="edu/harvard/wcfia/yoshikoder/document/tokenizer/TokenList.class" />
-        <include name="edu/harvard/wcfia/yoshikoder/document/tokenizer/TokenListImpl.class" />
-      </fileset>
-    </jar>
-  </target>
 </project>

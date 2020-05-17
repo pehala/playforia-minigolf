@@ -48,8 +48,8 @@ before_deploy:
   - export VERSION=$(cat client/build.properties | grep "version" | cut -d'=' -f2)
   - export TITLE="Release ${VERSION}- `date +'%Y-%m-%d'`"
   - zip -r tracks.zip tracks/*
-  - cd client ; ant win ; wine '/home/travis/.wine/drive_c/Program Files (x86)/Inno Setup 5/iscc.exe' /DMyAppVersion=$VERSION /DMyAppExeName="Client-${VERSION}.exe" client.iss /O /F /q'Client' ; cd ..
-  - cd client ; sudo ant osx-bundled2 ; cd ..
+  - cd client ; ant -f build_dist.xml win ; wine '/home/travis/.wine/drive_c/Program Files (x86)/Inno Setup 5/iscc.exe' /DMyAppVersion=$VERSION /DMyAppExeName="Client-${VERSION}.exe" client.iss /O /F /q'Client' ; cd ..
+  - cd client ; sudo ant -f build_dist.xml osx-bundled2 ; cd ..
   - cd server ; ant compile ; cd ..
   - cd editor ; ant compile ; cd ..
     #- ls client
@@ -59,7 +59,7 @@ jobs:
   include:
     - stage: compile
       name: "Client"
-      script: "cd client ; ant jar"
+      script: "cd client ; ant -f build_dist.xml jar"
     - name: "Server"
       script: "cd server ; ant compile"
     - name: "Editor"
