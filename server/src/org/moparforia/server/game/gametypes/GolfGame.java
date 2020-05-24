@@ -63,7 +63,7 @@ public abstract class GolfGame extends Game {
         this.numPlayers = numPlayers;
         this.playerStrokes = new int[numPlayers];
         tracks = initTracks();
-
+        System.out.println("GOLFGAME - CONSTRUCTOR");
     }
 
 
@@ -71,6 +71,7 @@ public abstract class GolfGame extends Game {
 
     @Override
     public boolean handlePacket(Server server, Player player, Matcher message) {
+        System.out.println("GOLFGAME - HANDLEPACKET (" + message.group(1) + ")");
         if (message.group(1).equals("beginstroke")) {
             //beginstroke\t7sw8
             String mouseCoords = message.group(2);
@@ -103,6 +104,7 @@ public abstract class GolfGame extends Game {
 
     @Override
     protected void reset() {
+        System.out.println("GOLFGAME - RESET");
         currentTrack = 0;
         playerStrokes = new int[playerCount()];
         strokesThisTrack = 0;
@@ -111,6 +113,7 @@ public abstract class GolfGame extends Game {
     }
 
     public void startGame() {
+        System.out.println("GOLFGAME - STARTGAME");
         writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "start")));
         StringBuilder buff = new StringBuilder(); // STRING BUILDER IS BEING USEDS FAGGOTS
         for (int i = 0; i < getPlayers().size(); i++) {
@@ -124,10 +127,12 @@ public abstract class GolfGame extends Game {
     }
 
     public void rateTrack(String rating) {
+        System.out.println("GOLFGAME - RATETRACK");
         tracks.get(currentTrack).rate(rating);
     }
 
     public void sendGameInfo(Player player) {
+        System.out.println("GOLFGAME - SENDGAMEINFO");
         Channel c = player.getChannel();
         c.write(new Packet(PacketType.DATA, Tools.tabularize("status", "game")));
         c.write(new Packet(PacketType.DATA, Tools.tabularize("game", "gameinfo",
@@ -139,6 +144,7 @@ public abstract class GolfGame extends Game {
     }
 
     public void endStroke(Player p, String playStatus) {
+        System.out.println("GOLFGAME - ENDSTROKE (" + playStatus + ")");
         boolean finished = true;
         playerStrokes[getPlayerId(p)] += 1;
         this.playStatus = playStatus;
@@ -167,8 +173,10 @@ public abstract class GolfGame extends Game {
     }
 
     protected int getNextPlayer(String s) {
+        System.out.println("GOLFGAME - GETNEXTPLAYER (" + s + ")");
         strokeCounter++;
         int player = strokeCounter % getPlayers().size();
+        System.out.println("GOLFGAME - PLAYER=" + s);
         if (s.charAt(player) == 't') {  // if this player has already finihed
             getNextPlayer(s);
         } else { // if player has not finished
@@ -180,6 +188,7 @@ public abstract class GolfGame extends Game {
 
 
     protected void updateStats() {
+        System.out.println("GOLFGAME - UPDATESTATS");
 
         int players = 0;
         int strokes = 0;
@@ -199,6 +208,7 @@ public abstract class GolfGame extends Game {
     }
 
     protected boolean checkRecord() {
+        System.out.println("GOLFGAME - CHECKRECORD");
         if (getLeadingPlayer().hasSkipped()) {
             return false;
         }
@@ -215,6 +225,7 @@ public abstract class GolfGame extends Game {
     }
 
     protected Player getLeadingPlayer() {
+        System.out.println("GOLFGAME - GETLEADINGPLAYER");
         return playerForId(getLeadingPlayerId());
     }
 
@@ -231,6 +242,7 @@ public abstract class GolfGame extends Game {
     }
 
     protected int getLeadingPar() {
+        System.out.println("GOLFGAME - GETLEADINGPAR");
         int minValue = playerStrokes[0];
         for (int i = 1; i < playerStrokes.length; i++) {
             if (playerStrokes[i] < minValue) {
@@ -241,6 +253,7 @@ public abstract class GolfGame extends Game {
     }
 
     protected void nextTrack() {
+        System.out.println("GOLFGAME - NEXTTRACK");
         updateStats();
         strokesThisTrack = 0;
         strokeCounter = 0;
@@ -263,11 +276,13 @@ public abstract class GolfGame extends Game {
     }
 
     public int getFirstPlayer() {
+        System.out.println("GOLFGAME - GETFIRSTPLAYER");
         return (strokeCounter += currentTrack % playerCount());
     }
 
 
     public void voteSkip(Player p) {
+        System.out.println("GOLFGAME - VOTESKIP");
         p.setSkipped(true);
         writeExcluding(p, new Packet(PacketType.DATA, Tools.tabularize("game", "voteskip", getPlayerId(p))));
         for (Player player : getPlayers()) {
@@ -296,12 +311,14 @@ public abstract class GolfGame extends Game {
     }
 
     public void beginStroke(Player p, String mouseCoords) {
+        System.out.println("GOLFGAME - BEGINSTROKE");
         //todo: anti cheat mechanisms!
         writeExcluding(p, new Packet(PacketType.DATA, Tools.tabularize("game", "beginstroke", getPlayerId(p), mouseCoords)));
 
     }
 
     public String getGameString() {
+        System.out.println("GOLFGAME - SETGAMESTRING");
         return Tools.tabularize(gameId, name, passworded ? "t" : "f", perms,
                 numPlayers, -1, tracks.size(), tracksType, maxStrokes, strokeTimeout,
                 waterEvent, collision, trackScoring, trackScoringEnd, getPlayers().size());
