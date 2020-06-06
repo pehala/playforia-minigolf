@@ -6,7 +6,11 @@ Prebuild Standalone Clients have arrived: (no Java installation required anymore
 
 Check out the latest [Release](https://github.com/PhilippvK/playforia-minigolf/releases)!
 
-For benchmarking resons, a very low spec game server is currently hosting the minigolf server application. You can try it out using the IP `35.209.2.60` and leave some feedback on how the experience was. I apologize for any downtimes, as I can not check it very often.
+## IMPORTANT ANOUNCEMENT
+
+Due to legal reasons I have to shut down the self-hosted minigolf server on the 6th of June. See Issue #32 for more information.
+
+~For benchmarking resons, a very low spec game server is currently hosting the minigolf server application. You can try it out using the IP `35.209.2.60` and leave some feedback on how the experience was. I apologize for any downtimes, as I can not check it very often.~
 
 ## Screenshot
 
