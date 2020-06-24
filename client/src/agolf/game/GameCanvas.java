@@ -62,7 +62,7 @@ public class GameCanvas extends GameBackgroundCanvas implements Runnable, MouseM
     private boolean aBoolean2843;
 
     // aimbot stuff
-    final private boolean allowCheating = false;
+    final private boolean allowCheating = true;
     private double hackedX = 0;
     private double hackedY = 0;
     private boolean isCheating = false;
