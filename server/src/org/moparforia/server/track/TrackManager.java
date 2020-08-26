@@ -1,7 +1,6 @@
 package org.moparforia.server.track;
 
-import com.github.jmkgreen.morphia.Datastore;
-import org.moparforia.server.db.Database;
+import org.mongodb.morphia.Datastore;
 import org.moparforia.server.game.Player;
 import org.moparforia.shared.Track;
 
@@ -27,25 +26,25 @@ public class TrackManager {
         loadTracks();
         loadTrackSets();
         hasLoaded = true;
-        schedule.scheduleAtFixedRate(new TrackUpdater(),5,5,TimeUnit.MINUTES);
+//        schedule.scheduleAtFixedRate(new TrackUpdater(),5,5,TimeUnit.MINUTES);
     }
 
-    private class TrackUpdater implements Runnable {
-
-        @Override
-        public void run() {
-            Datastore ds = Database.getInstance().getDatastore();
-            ArrayList<Track> list = (ArrayList<Track>) ds.find(Track.class).asList();
-            int oldSize = tracks.size();
-            for(Track t : list) {
-                if(!tracks.contains(t)) {
-                    tracks.add(t);
-                }
-            }
-
-            System.out.println("Added "+ (tracks.size() - oldSize) +" tracks.");
-        }
-    }
+//    private class TrackUpdater implements Runnable {
+//
+//        @Override
+//        public void run() {
+//            Datastore ds = Database.getInstance().getDatastore();
+//            ArrayList<Track> list = (ArrayList<Track>) ds.find(Track.class).asList();
+//            int oldSize = tracks.size();
+//            for(Track t : list) {
+//                if(!tracks.contains(t)) {
+//                    tracks.add(t);
+//                }
+//            }
+//
+//            System.out.println("Added "+ (tracks.size() - oldSize) +" tracks.");
+//        }
+//    }
 
 
     //private static final void loadTracks() {
