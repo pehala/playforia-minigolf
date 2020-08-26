@@ -38,7 +38,7 @@ public class Server implements Runnable {
     private ConcurrentLinkedQueue<Event> events = new ConcurrentLinkedQueue<Event>();
     private HashMap<PacketType, ArrayList<PacketHandler>> packetHandlers = new HashMap<PacketType, ArrayList<PacketHandler>>();
     private String host = "0.0.0.0";
-    private int port = 4243;
+    private int port = 4242;
     private HashMap<LobbyType, Lobby> lobbies = new HashMap<LobbyType, Lobby>();
     //private ArrayList<LobbyRef> lobbies = new ArrayList<LobbyRef>();
     //private HashMap<Integer, Game> games = new HashMap<Integer, Game>();

@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty</artifactId> <!-- Use 'netty-all' for 4.0 or above -->
+            <artifactId>netty</artifactId>
             <version>3.6.6.Final</version>
             <scope>compile</scope>
         </dependency>
@@ -42,6 +42,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${project.mainClass}</mainClass>
+                    <addResourcesToClasspath>true</addResourcesToClasspath>
+                    <longClasspath>true</longClasspath>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -77,8 +87,8 @@
                         </goals>
                         <configuration>
                             <headerType>gui</headerType>
-                            <jar>${project.build.directory}/${artifactId}-${version}.jar</jar>
-                            <outfile>${project.build.directory}/${artifactId}-${version}.exe</outfile>
+                            <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
+                            <outfile>${project.build.directory}/${project.artifactId}-${project.version}.exe</outfile>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <classPath>
                                 <mainClass>${project.mainClass}</mainClass>
@@ -98,7 +108,7 @@
                                 <txtProductVersion>1.0.0.0</txtProductVersion>
                                 <productName>${project.name}</productName>
                                 <internalName>${project.name}</internalName>
-                                <originalFilename>${artifactId}-${version}.exe</originalFilename>
+                                <originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
                             </versionInfo>
                         </configuration>
                     </execution>
