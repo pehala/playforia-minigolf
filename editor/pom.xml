@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>editor</artifactId>
+    <version>1.0</version>
+
+    <parent>
+        <groupId>org.moparforia</groupId>
+        <artifactId>playforia-minigolf</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <properties>
+        <project.mainClass>org.moparforia.editor.TrackEditor</project.mainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.moparforia</groupId>
+            <artifactId>shared</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>res</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+<!--            &lt;!&ndash; Maven Assembly Plugin &ndash;&gt;-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; MainClass in mainfest make a executable jar &ndash;&gt;-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            <mainClass>org.moparforia.editor.TrackEditor</mainClass>-->
+<!--                        </manifest>-->
+<!--                    </archive>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+
+        </plugins>
+    </build>
+</project>

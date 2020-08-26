@@ -6,20 +6,15 @@ dist: xenial
 jdk:
   - openjdk8
 
-script: "date"
+script: "mvn install"
 
 before_deploy:
-  - "export TITLE=testtitle"
-  - "export BODY=testbody"
   - "zip -r tracks.zip tracks/*"
-  - "cd client ; ant compile ; cd .."
-  - "cd server ; ant compile ; cd .."
-  - "cd editor ; ant compile ; cd .."
 
 jobs:
   include:
     - stage: compile
-      name: "Client"
+      name: "Maven"
       script: "cd client ; ant compile"
     - name: "Server"
       script: "cd server ; ant compile"
@@ -29,12 +24,10 @@ jobs:
       deploy:
         provider: releases
         api_key: $GitHub_Token
-        #title: ${TITLE}
-        #body: ${BODY}
         file:
-          - "server/server.jar"
-          - "client/client.jar"
-          - "editor/editor.jar"
+          - "server/target/server-1.0.jar"
+          - "client/target/client-1.0.jar"
+          - "editor/target/editor-1.0.jar"
           - "tracks.zip"
         skip_cleanup: true
         on:
