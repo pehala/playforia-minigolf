@@ -1,7 +1,7 @@
 package org.moparforia.server.net.packethandlers.golf;
 
 import org.moparforia.server.Server;
-import org.moparforia.server.db.Database;
+//import org.moparforia.server.db.Database;
 import org.moparforia.server.game.Player;
 import org.moparforia.server.net.Packet;
 import org.moparforia.server.net.PacketHandler;
