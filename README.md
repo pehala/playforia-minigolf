@@ -35,7 +35,7 @@ The Java Applet-based Minigolf Client was one of the most popular multiplayer ga
 - Commented out any communication with original Playforia.net servers
 - Use local Map store instead of database
 - Added ability to pass IP of server to client
-- Ability to play on on a single computer and hosting a game for up to 4 players in your home network
+- Ability to play on a single computer and hosting a game for up to 4 players in your home network
 - Removed bad words and custom tracks
 - Added ability to choose a nickname freely
 
@@ -44,8 +44,8 @@ The Java Applet-based Minigolf Client was one of the most popular multiplayer ga
 ### Prerequisites
 - Clone this repo: `git clone git@github.com:PhilippvK/playforia-minigolf.git`
 - Install Java Development Kit 8 (https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-- OpenJDK1.8 should work as well!
-- Install Apache `ant` for building: https://ant.apache.org/manual/install.html
+  * OpenJDK1.8 should work as well!
+- Install Apache `maven` for building: https://maven.apache.org/install.html
 - *Optional:* Install IntelliJ IDEA Java IDE (https://www.jetbrains.com/idea/download/) and import this reposiory as project 
 
 ### Building
@@ -58,10 +58,7 @@ First, the server application has to be started as it provides resources like so
 As I could not manage to include the tracks inside the compiled JAR archive, the `tracks` directory has to be located at the same folder where the `server.jar` is located! There is a symbolic link in the `server/` directory which will likely not work on Windows systems. Please remove it and copy the directory instead!
 Assuming that all 3 tools have compiled successfully (or downloaded them from the [Releases Page](https://github.com/PhilippvK/playforia-minigolf/releases)), you have 3 possible ways for running the server binary:
 1. Using the IntelliJ IDE: Use the provides build artifacts or run the server by pressing the play button after compiling
-2. Using the Maven tool:
-    * Client: Run `mvn compile exec:exec` in the `./client` directory
-    * Server: Run `mvn compile exec:java` in the `./server` directory
-    * Editor: Run `mvn compile exec:java` in the `./editor` directory
+2. Using the Maven tool:  Run `mvn compile exec:java` in the `./server`, `./client` or `./editor` directory
 3. Use the exported JAR file: `java -jar server.jar`
 
 The client can be started the same way (AFTER THE SERVER WAS STARTED) but you can also give launch options for server ip and game language in the following format

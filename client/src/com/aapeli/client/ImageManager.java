@@ -91,7 +91,7 @@ public final class ImageManager {
 
 
         //Image var3 = Toolkit.getDefaultToolkit().getImage("AGolf/picture/"+getClass().getResource(method1597(imageFileName)));
-        Image var3 = Toolkit.getDefaultToolkit().createImage(ClassLoader.getSystemResource("AGolf/picture/"+method1597(imageFileName)));
+        Image var3 = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/AGolf/picture/"+method1597(imageFileName)));
         this.imageTracker.registerImage(imageAlias, var3);
         return imageAlias;
     }
@@ -105,7 +105,7 @@ public final class ImageManager {
             System.out.println("ImageManager.defineSharedImage(\"" + imageAlias + "\",\"" + imageFileName + "\")");
         }
 
-        Image var3 = Toolkit.getDefaultToolkit().createImage(ClassLoader.getSystemResource("Shared/picture/"+method1597(imageFileName)));
+        Image var3 = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/Shared/picture/"+method1597(imageFileName)));
         this.imageTracker.method1624(imageAlias, var3);
         return imageAlias;
     }

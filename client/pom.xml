@@ -48,8 +48,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <!-- I was unable to set up normal way (applets are hell), so exec plugin will just run the compile jar -->
-                    <executable>target/${project.artifactId}-${project.version}.jar</executable>
+                    <mainClass>${project.mainClass}</mainClass>
                 </configuration>
             </plugin>
 
