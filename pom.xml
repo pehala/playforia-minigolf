@@ -20,6 +20,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.mainClass>test.mainClass</project.mainClass>
+        <picocli.version>4.5.1</picocli.version>
     </properties>
     <build>
         <pluginManagement>
@@ -100,7 +101,11 @@
                 <artifactId>shared</artifactId>
                 <version>1.0</version>
             </dependency>
-
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>${picocli.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
