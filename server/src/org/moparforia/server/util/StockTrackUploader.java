@@ -4,7 +4,6 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import org.moparforia.shared.Track;
-import org.moparforia.server.db.Database;
 import org.moparforia.server.track.TrackCategory;
 import org.moparforia.server.track.TrackSet;
 import org.moparforia.server.track.TrackSetDifficulty;
@@ -65,69 +64,69 @@ public class StockTrackUploader {
                 tracks.add(new Track(name, author, data, type.getId()));
             }
         }
-        uploadTracks();
+        //uploadTracks();
         System.out.println("Done.");
     }
 
-    private static final void loadTrackSets() throws IOException {
-        if (tracks == null) {
-            return;
-        }
-        ArrayList<TrackSet> trackSets = new ArrayList<TrackSet>();
-        FileSystem fs = FileSystems.getDefault();
-        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath("tracks", "sets"), new DirectoryStream.Filter<Path>() {
-            @Override
-            public boolean accept(Path entry) throws IOException {
-                return entry.getFileName().toString().endsWith(".trackset");
-            }
-        });
-        for (Path filePath : directoryStream) {
-            Scanner scanner = new Scanner(filePath);
-            String setName = scanner.nextLine();
-            TrackSetDifficulty trackSetDifficulty = TrackSetDifficulty.valueOf(scanner.nextLine());
-            ArrayList<String> fileNames = new ArrayList<String>();
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if(!line.isEmpty()) {
-                    fileNames.add(line);
-                }
-            }
-            trackSets.add(new TrackSet(setName, trackSetDifficulty, fileNames));
-        }
-        uploadTrackSets(trackSets);
-    }
+//    private static final void loadTrackSets() throws IOException {
+//        if (tracks == null) {
+//            return;
+//        }
+//        ArrayList<TrackSet> trackSets = new ArrayList<TrackSet>();
+//        FileSystem fs = FileSystems.getDefault();
+//        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(fs.getPath("tracks", "sets"), new DirectoryStream.Filter<Path>() {
+//            @Override
+//            public boolean accept(Path entry) throws IOException {
+//                return entry.getFileName().toString().endsWith(".trackset");
+//            }
+//        });
+//        for (Path filePath : directoryStream) {
+//            Scanner scanner = new Scanner(filePath);
+//            String setName = scanner.nextLine();
+//            TrackSetDifficulty trackSetDifficulty = TrackSetDifficulty.valueOf(scanner.nextLine());
+//            ArrayList<String> fileNames = new ArrayList<String>();
+//            while (scanner.hasNextLine()) {
+//                String line = scanner.nextLine().trim();
+//                if(!line.isEmpty()) {
+//                    fileNames.add(line);
+//                }
+//            }
+//            trackSets.add(new TrackSet(setName, trackSetDifficulty, fileNames));
+//        }
+//        uploadTrackSets(trackSets);
+//    }
 
-    private static void uploadTracks() {
-        ArrayList<DBObject> _tracks = new ArrayList<DBObject>();
-        for (Track track : tracks){
-            _tracks.add(new BasicDBObjectBuilder().append("name", track.getName()).
-                    append("author", track.getAuthor()).
-                    append("data", track.getData()).
-                    append("category", track.getCategory()).
-                    append("version", 1).
-                    append("num_completions", 0).
-                    append("num_strokes", 0).
-                    append("num_best_strokes", 0).
-                    append("first_best_name", "").
-                    append("first_best_time", 0).
-                    append("last_best_name", "").
-                    append("last_best_time", 0).
-                    append("ratings", new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}).
-                    append("num_best_players", 0).get());
-        }
-        DBCollection tracks = Database.getInstance().getDatabase().getCollection("tracks");
-        tracks.insert(_tracks);
-    }
+//    private static void uploadTracks() {
+//        ArrayList<DBObject> _tracks = new ArrayList<DBObject>();
+//        for (Track track : tracks){
+//            _tracks.add(new BasicDBObjectBuilder().append("name", track.getName()).
+//                    append("author", track.getAuthor()).
+//                    append("data", track.getData()).
+//                    append("category", track.getCategory()).
+//                    append("version", 1).
+//                    append("num_completions", 0).
+//                    append("num_strokes", 0).
+//                    append("num_best_strokes", 0).
+//                    append("first_best_name", "").
+//                    append("first_best_time", 0).
+//                    append("last_best_name", "").
+//                    append("last_best_time", 0).
+//                    append("ratings", new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}).
+//                    append("num_best_players", 0).get());
+//        }
+//        DBCollection tracks = Database.getInstance().getDatabase().getCollection("tracks");
+//        tracks.insert(_tracks);
+//    }
 
-    private static void uploadTrackSets(ArrayList<TrackSet> trackSets) {
-        ArrayList<DBObject> _tracks = new ArrayList<DBObject>();
-        for (TrackSet track : trackSets){
-            _tracks.add(new BasicDBObjectBuilder().append("name", track.getName()).
-                    append("difficulty", track.getDifficulty().getId()).
-                    append("times_played", 0).
-                    append("ratings", new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}).get());
-        }
-        DBCollection tracks = Database.getInstance().getDatabase().getCollection("track_sets");
-        tracks.insert(_tracks);
-    }
+//    private static void uploadTrackSets(ArrayList<TrackSet> trackSets) {
+//        ArrayList<DBObject> _tracks = new ArrayList<DBObject>();
+//        for (TrackSet track : trackSets){
+//            _tracks.add(new BasicDBObjectBuilder().append("name", track.getName()).
+//                    append("difficulty", track.getDifficulty().getId()).
+//                    append("times_played", 0).
+//                    append("ratings", new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}).get());
+//        }
+//        DBCollection tracks = Database.getInstance().getDatabase().getCollection("track_sets");
+//        tracks.insert(_tracks);
+//    }
 }

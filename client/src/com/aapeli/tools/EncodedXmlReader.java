@@ -1,7 +1,5 @@
 package com.aapeli.tools;
 
-import com.sun.xml.internal.bind.v2.runtime.output.Encoded;
-
 import java.io.*;
 import java.net.URL;
 

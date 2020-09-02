@@ -1,11 +1,11 @@
 package org.moparforia.shared;
 
-import com.github.jmkgreen.morphia.annotations.Entity;
-import com.github.jmkgreen.morphia.annotations.Id;
-import com.github.jmkgreen.morphia.annotations.Property;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Property;
 
 import java.util.Arrays;
 
