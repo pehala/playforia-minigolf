@@ -38,7 +38,7 @@ public final class SoundManager implements Runnable {
         this.anURL1486 = var1.getCodeBase();
 
         try {
-            this.anURL1486 = new URL(this.anURL1486, "sound/");
+            this.anURL1486 = new URL(this.anURL1486, "src/main/resources/sound/");
         } catch (MalformedURLException var5) {
             ;
         }
@@ -214,7 +214,7 @@ public final class SoundManager implements Runnable {
 
         try {
             if (FileUtil.isFileUrl(var1)) {
-                var1 = new URL(var1, FileUtil.RESOURCE_DIR + "sound/");
+                var1 = new URL(var1, FileUtil.RESOURCE_DIR + "src/main/resources/sound/");
             } else {
                 var1 = new URL(var1, "../Shared/sound/");
             }

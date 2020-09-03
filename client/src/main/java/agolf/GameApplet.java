@@ -86,7 +86,7 @@ public class GameApplet extends AApplet {
     public void connectToServer() {
         this.gameContainer.connection = new Conn(this.gameContainer);
         if (!this.gameContainer.connection.method1158()) {
-            this.setEndState(AApplet.END_ERROR_CONNECTION);
+            this.setEndState(END_ERROR_CONNECTION);
         }
 
     }
@@ -265,7 +265,7 @@ public class GameApplet extends AApplet {
     }
 
     public void quit(String from) {
-        this.setEndState(AApplet.END_QUIT);
+        this.setEndState(END_QUIT);
         this.gameContainer.connection.writeData((from != null ? from + "\t" : "") + "quit");
         this.setGameState(5);
     }

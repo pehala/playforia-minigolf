@@ -1,7 +1,6 @@
 package org.moparforia.client;
 
 import agolf.AGolf;
-import com.aapeli.connection.GameCipher;
 
 import javax.swing.*;
 import java.applet.Applet;
@@ -9,7 +8,6 @@ import java.applet.AppletContext;
 import java.applet.AppletStub;
 import java.awt.*;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -418,7 +416,7 @@ public class Launcher extends JFrame {
             params = new HashMap<String, String>();
             params.put("initmessage", "Loading game...");
             params.put("ld_page", "javascript:Playray.Notify.delegate({ jvm: { version: '%v', vendor: '%w', t1: '%r', t2: '%f' } })");
-            params.put("image", "/appletloader_playforia.gif");
+            params.put("image", "/src/main/resources/appletloader_playforia.gif");
             /*if(serverBox.isSelected()) {
                 params.put("server", "149.255.111.161" + ":" + g.port);
             } else {

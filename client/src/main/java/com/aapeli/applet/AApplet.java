@@ -22,6 +22,7 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Optional;
 
 public abstract class AApplet extends Applet implements Runnable, ActionListener, QuickTimerListener {
 
