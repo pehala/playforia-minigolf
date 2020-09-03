@@ -22,7 +22,6 @@
         <project.mainClass>test.mainClass</project.mainClass>
     </properties>
     <build>
-        <sourceDirectory>src</sourceDirectory>
         <pluginManagement>
             <plugins>
                 <plugin>

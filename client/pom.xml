@@ -28,11 +28,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>res</directory>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -49,6 +44,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>${project.mainClass}</mainClass>
+                    <addResourcesToClasspath>true</addResourcesToClasspath>
                 </configuration>
             </plugin>
 
@@ -58,7 +54,7 @@
                 <version>1.2.0</version>
                 <configuration>
                     <bundleName>${project.name}</bundleName>
-                    <iconFile>res/icons/playforia.icns</iconFile>
+                    <iconFile>src/main/resources/icons/playforia.icns</iconFile>
                     <mainClass>${project.mainClass}</mainClass>
                     <generateDiskImageFile>true</generateDiskImageFile>
                 </configuration>
@@ -92,7 +88,7 @@
                                 <mainClass>${project.mainClass}</mainClass>
                                 <preCp>anything</preCp>
                             </classPath>
-                            <icon>res/icons/playforia.ico</icon>
+                            <icon>src/main/resources/icons/playforia.ico</icon>
                             <jre>
                                 <minVersion>1.8.0</minVersion>
                                 <jdkPreference>preferJre</jdkPreference>
