@@ -1,16 +1,8 @@
 # Minigolf Server/Client/Editor (Playforia) ![Test Build](https://github.com/PhilippvK/playforia-minigolf/workflows/Test%20build/badge.svg)
 
-## UPDATE
+## WARNING
 
-Prebuild Standalone Clients have arrived: (no Java installation required anymore for Windows and MacOS)
-
-Check out the latest [Release](https://github.com/PhilippvK/playforia-minigolf/releases)!
-
-## IMPORTANT ANOUNCEMENT
-
-Due to legal reasons I have to shut down the self-hosted minigolf server on the 6th of June. See Issue #32 for more information.
-
-~For benchmarking resons, a very low spec game server is currently hosting the minigolf server application. You can try it out using the IP `35.209.2.60` and leave some feedback on how the experience was. I apologize for any downtimes, as I can not check it very often.~
+Currently there are major code and toolchain changes in development. Meanwhile feel free to use the latest stable [Release](https://github.com/PhilippvK/playforia-minigolf/releases)!
 
 ## Screenshot
 
@@ -59,7 +51,7 @@ As I could not manage to include the tracks inside the compiled JAR archive, the
 Assuming that all 3 tools have compiled successfully (or downloaded them from the [Releases Page](https://github.com/PhilippvK/playforia-minigolf/releases)), you have 3 possible ways for running the server binary:
 1. Using the IntelliJ IDE: Use the provides build artifacts or run the server by pressing the play button after compiling
 2. Using the Maven tool:  Run `mvn compile exec:java` in the `./server`, `./client` or `./editor` directory
-3. Use the exported JAR file: `java -jar server.jar`
+3. Use the exported JAR file: `java -jar server.jar` and so on.
 
 The client can be started the same way (AFTER THE SERVER WAS STARTED) but you can also give launch options for server ip and game language in the following format
 
@@ -69,7 +61,7 @@ java -jar client.jar -server 192.168.1.7 -lang en_US # Replace IP with the one o
 
 After the Login screen, which can be skipped with an empty form, you should see your familiar Playforia Minigolf Menu!
 
-**NEW:** You can now choose your nickname freely. However the input to the password field will still be ignored and there is no check for errors and so on...
+**NEW:** You can now choose your nickname freely. Please avoid using hate speech,...
 
 Running the Editor is quite straightforward as it can be started like expected: `java -jar editor.jar`
 ### CLI options
@@ -86,8 +78,10 @@ Tested:
 
 
 ## Problems
-- Passwords and logins are ignored
 - Ratings are not synced
+- No sound
+- Custom Tracks category disabled
+- Server sometimes crashes due to race conditions
 
 ## Notices
 
@@ -103,6 +97,7 @@ Tested:
 - [@maitovelkkis](https://github.com/maitovelkkis)
 - [@eYeWoRRy](https://github.com/eYeWoRRy)
 - [@pehala](https://github.com/pehala)
+
 ---
 
 ## Final Words
