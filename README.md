@@ -67,13 +67,15 @@ The client can be started the same way (AFTER THE SERVER WAS STARTED) but you ca
 java -jar client.jar -server 192.168.1.7 -lang en_US # Replace IP with the one of your server (which you can find out by using for example `ifconfig`/`ipconfig`) and lang with en_US, fi_FI or sv_SE
 ```
 
-If you want to enable debugging messages, add `-verbose` to the list of arguments.
-
 After the Login screen, which can be skipped with an empty form, you should see your familiar Playforia Minigolf Menu!
 
 **NEW:** You can now choose your nickname freely. However the input to the password field will still be ignored and there is no check for errors and so on...
 
 Running the Editor is quite straightforward as it can be started like expected: `java -jar editor.jar`
+### CLI options
+Both client and server include CLI options for hostname (`-ip`), port (`-p`) settings. To learn about all the available setting you can include help with `-h` parameter.
+
+If you want to enable debugging messages, add `--verbose` to the list of arguments.
 
 ## Compability
 

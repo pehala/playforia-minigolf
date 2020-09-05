@@ -25,11 +25,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class Server implements Runnable {
 
-    public static void main(String[] args) {
-        new Server().start();
-    }
+public class Server implements Runnable {
 
     public static final boolean DEBUG = true;
 
@@ -37,8 +34,10 @@ public class Server implements Runnable {
     private ChannelGroup allChannels = new DefaultChannelGroup();
     private ConcurrentLinkedQueue<Event> events = new ConcurrentLinkedQueue<Event>();
     private HashMap<PacketType, ArrayList<PacketHandler>> packetHandlers = new HashMap<PacketType, ArrayList<PacketHandler>>();
-    private String host = "0.0.0.0";
-    private int port = 4242;
+
+    private String host;
+    private int port;
+
     private HashMap<LobbyType, Lobby> lobbies = new HashMap<LobbyType, Lobby>();
     //private ArrayList<LobbyRef> lobbies = new ArrayList<LobbyRef>();
     //private HashMap<Integer, Game> games = new HashMap<Integer, Game>();
@@ -46,11 +45,20 @@ public class Server implements Runnable {
     private int playerIdCounter;
     private int gameIdCounter;
 
-    public Server() {
+
+    public Server(String host, int port) {
+        this.host = host;
+        this.port = port;
         for (LobbyType lt : LobbyType.values()) {
             lobbies.put(lt, new Lobby(lt));
         }
     }
+
+//    public Server() {
+//        for (LobbyType lt : LobbyType.values()) {
+//            lobbies.put(lt, new Lobby(lt));
+//        }
+//    }
 
     public int getNextPlayerId() {
         return playerIdCounter++;
@@ -185,7 +193,7 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
-        //noinspection InfiniteLoopStatement
+        System.out.println("Started server on host " + this.host + " with port " + this.port);
         while (true) {
             try {
                 Thread.sleep(10);
@@ -207,5 +215,4 @@ public class Server implements Runnable {
             }
         }
     }
-
 }
