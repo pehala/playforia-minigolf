@@ -19,6 +19,14 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      # Step that caches and restores maven dependencies
+      - name: Cache maven dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Install Dependencies
         run: sudo apt-get install -y genisoimage
       - name: Build with Maven
