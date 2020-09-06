@@ -119,10 +119,7 @@ public class Launcher implements Callable<Void> {
 
     @Override
     public Void call() throws Exception{
-        JFrame frame = new JFrame();
-        frame.setTitle("Minigolf");
-        Image img = loadIcon();
-        frame.setIconImage(img);
+        JFrame frame = createFrame();
         if (hostname.isEmpty() || port == 0) {
             // Determine which of these was actually false
             String temp_hostname = hostname.isEmpty() ? DEFAULT_SERVER : hostname;
@@ -134,6 +131,14 @@ public class Launcher implements Callable<Void> {
 
         launchGame(frame, hostname, port, lang, verbose);
         return null;
+    }
+
+    public JFrame createFrame() throws IOException {
+        JFrame frame = new JFrame();
+        frame.setTitle("Minigolf");
+        Image img = loadIcon();
+        frame.setIconImage(img);
+        return frame;
     }
 
     public Game launchGame(JFrame frame, String hostname, int port, Language lang, boolean verbose) {
