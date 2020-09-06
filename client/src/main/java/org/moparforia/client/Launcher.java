@@ -2,24 +2,25 @@ package org.moparforia.client;
 
 import picocli.CommandLine;
 
+import org.moparforia.shared.ManifestVersionProvider;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.concurrent.Callable;
 
-/**
- * Playforia
- * 28.5.2013
- */
+
 @CommandLine.Command(
         description = "Starts Minigolf Client",
-        name = "client", mixinStandardHelpOptions = true
+        name = "client",
+        mixinStandardHelpOptions = true,
+        versionProvider = ManifestVersionProvider.class
 )
 public class Launcher implements Callable<Void> {
 
-    private static final String DEFAULT_SERVER = "127.0.0.1";
-    private static final int DEFAULT_PORT = 4242;
+    public static final String DEFAULT_SERVER = "127.0.0.1";
+    public static final int DEFAULT_PORT = 4242;
 
     // CLI options
     @CommandLine.Option(names = {"--hostname", "-ip"},
@@ -33,9 +34,8 @@ public class Launcher implements Callable<Void> {
     private int port;
 
     @CommandLine.Option(names = {"--lang", "-l"},
-            description = "Sets language of the game, available values: ${COMPLETION-CANDIDATES}",
-            defaultValue = "EN_US")
-    private Language lang;
+            description = "Sets language of the game, available values:\n ${COMPLETION-CANDIDATES}")
+    private Language lang = Language.EN_US;
 
     @CommandLine.Option(names = {"--verbose", "-v"}, description = "Set if you want verbose information")
     private static boolean verbose = false;
@@ -51,7 +51,9 @@ public class Launcher implements Callable<Void> {
     public static void main(String... args) throws Exception {
         Launcher launcher = new Launcher();
         try {
-            CommandLine.ParseResult parseResult = new CommandLine(launcher).parseArgs(args);
+            CommandLine.ParseResult parseResult = new CommandLine(launcher)
+                    .setCaseInsensitiveEnumValuesAllowed(true)
+                    .parseArgs(args);
             if (!CommandLine.printHelpIfRequested(parseResult)) {
                 launcher.call();
             }
@@ -61,7 +63,7 @@ public class Launcher implements Callable<Void> {
         }
     }
 
-    private boolean showSettingDialog(JFrame frame, String server, int port) throws ParseException {
+    public boolean showSettingDialog(JFrame frame, String server, int port) throws ParseException {
         JPanel pane = new JPanel();
         pane.setLayout(new GridLayout(4, 1));
 
@@ -117,10 +119,7 @@ public class Launcher implements Callable<Void> {
 
     @Override
     public Void call() throws Exception{
-        JFrame frame = new JFrame();
-        frame.setTitle("Minigolf");
-        Image img = ImageIO.read(getClass().getResource("/icons/playforia.png"));
-        frame.setIconImage(img);
+        JFrame frame = createFrame();
         if (hostname.isEmpty() || port == 0) {
             // Determine which of these was actually false
             String temp_hostname = hostname.isEmpty() ? DEFAULT_SERVER : hostname;
@@ -130,10 +129,33 @@ public class Launcher implements Callable<Void> {
             }
         }
 
-        new Game(frame, hostname, port, lang.toString(), verbose);
+        launchGame(frame, hostname, port, lang, verbose);
         return null;
     }
 
+    public JFrame createFrame() throws IOException {
+        JFrame frame = new JFrame();
+        frame.setTitle("Minigolf");
+        Image img = loadIcon();
+        frame.setIconImage(img);
+        return frame;
+    }
+
+    public Game launchGame(JFrame frame, String hostname, int port, Language lang, boolean verbose) {
+        return new Game(frame, hostname, port, lang.toString(), verbose);
+    }
+
+    public Image loadIcon() throws IOException {
+        return ImageIO.read(getClass().getResource("/icons/playforia.png"));
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     enum Language {
         EN_US("en_US"),
