@@ -126,6 +126,8 @@ public class Launcher implements Callable<Void> {
             int temp_port = port == 0 ? DEFAULT_PORT : port;
             if (!showSettingDialog(frame, temp_hostname, temp_port)) {
                 System.err.println("Server needs to be specified for minigolf to run");
+                System.exit(1);
+                return null;
             }
         }
 
