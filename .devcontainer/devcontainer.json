@@ -20,9 +20,14 @@
 			"default": true,
 			"name": "JavaSE-1.8",
 			"path": "/usr/local/sdkman/candidates/java/current"
+		}],
+		"maven.executable.path": "/usr/local/sdkman/candidates/maven/current/bin/mvn",
+		"maven.terminal.favorite": [{
+			"alias": "run",
+			"command": "compile exec:java"
 		}]
 	},
-	
+
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"vscjava.vscode-java-pack"
