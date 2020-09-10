@@ -22,7 +22,7 @@
 			"path": "/usr/local/sdkman/candidates/java/current"
 		}],
 		"maven.executable.path": "/usr/local/sdkman/candidates/maven/current/bin/mvn",
-		"maven.terminal.favorite": [{
+		"maven.terminal.favorites": [{
 			"alias": "run",
 			"command": "compile exec:java"
 		}]
