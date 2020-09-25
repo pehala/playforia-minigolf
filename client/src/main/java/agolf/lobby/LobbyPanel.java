@@ -256,9 +256,9 @@ public class LobbyPanel extends Panel {
             c.addItem("Only pend (A)");
         }
 
-        if(Launcher.isUsingCustomServer()) {
-            c.addItem("Only custom");
-        }
+        //if(Launcher.isUsingCustomServer()) {
+        //    c.addItem("Only custom");
+        //}
 
         c.select(1);
         c.setBounds(x, y, width, height);
@@ -336,7 +336,7 @@ public class LobbyPanel extends Panel {
     protected Choicer addChoicerTrackCategory(Panel container, int x, int y, int width, int height) {
         Choicer c = new Choicer();
         c.addItem("Official");
-        c.addItem("Custom");
+        //c.addItem("Custom");
         c.select(0);
         c.setBounds(x, y, width, height);
         container.add(c);

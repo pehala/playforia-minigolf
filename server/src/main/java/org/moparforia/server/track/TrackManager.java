@@ -81,7 +81,8 @@ public class TrackManager {
         FileSystem fs = FileSystems.getDefault();
         int counter = 0;
         for (TrackCategory type : TrackCategory.values()) {
-            if (type == TrackCategory.ALL || type == TrackCategory.CUSTOM || type == TrackCategory.UNKNOWN) {
+            //if (type == TrackCategory.ALL || type == TrackCategory.CUSTOM || type == TrackCategory.UNKNOWN) {
+            if (type == TrackCategory.ALL || type == TrackCategory.UNKNOWN) {
                 continue;
             }
             Path tracksPath = fs.getPath("tracks", type.getDir());
@@ -173,7 +174,8 @@ public class TrackManager {
         }
         ArrayList<Track> usedTracks = new ArrayList<Track>();// horrible
         for (Track track : tracks) {
-            if (TrackCategory.getByTypeId(track.getCategory()) == TrackCategory.ALL || TrackCategory.getByTypeId(track.getCategory()) == type) {
+            //if (TrackCategory.getByTypeId(track.getCategory()) == TrackCategory.ALL || TrackCategory.getByTypeId(track.getCategory()) == type) {
+            if (type == TrackCategory.ALL || TrackCategory.getByTypeId(track.getCategory()) == type) {
                 usedTracks.add(track);
             }
         }
