@@ -34,7 +34,8 @@ public class StockTrackUploader {
         tracks = new ArrayList<Track>();
         FileSystem fs = FileSystems.getDefault();
         for (TrackCategory type : TrackCategory.values()) {
-            if (type == TrackCategory.ALL || type == TrackCategory.CUSTOM || type == TrackCategory.UNKNOWN) {
+            //if (type == TrackCategory.ALL || type == TrackCategory.CUSTOM || type == TrackCategory.UNKNOWN) {
+            if (type == TrackCategory.ALL || type == TrackCategory.UNKNOWN) {
                 continue;
             }
             Path tracksPath = fs.getPath("tracks", type.getDir());
