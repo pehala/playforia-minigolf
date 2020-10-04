@@ -49,7 +49,6 @@ public class ChatHandler implements PacketHandler {
                         otherPlayer.getChannel().write(new Packet(PacketType.DATA,
                                 Tools.tabularize("lobby", "say", message.group(3), player.getNick(), message.group(4))));
                     }
-                    break;
                 }
             }
         } else if (message.group(2).equals("sayp")) {
