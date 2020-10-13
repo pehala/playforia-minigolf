@@ -1,6 +1,7 @@
 package org.moparforia.editor;
 
-import org.moparforia.shared.Track;
+import org.moparforia.shared.tracks.Track;
+import org.moparforia.shared.tracks.TrackCategory;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -207,7 +208,7 @@ public class EditorPanel extends JPanel {
                 chooser.showDialog(getThis(),"hurr");
                 File f = chooser.getSelectedFile();
                 //currentTrack = TrackStore.getTrack(f);//todo get rid of this (uses org.moparforia.server.track.TrackStore)!!
-                currentTrack = TrackEditor.loadTrack(f);
+                currentTrack = TrackEditor.loadTrack(f.toPath());
                 Map m = new MapDecompressor().decompress(currentTrack.getMap());
                 canvas.setMap(m);
             } catch (Exception exp) {
@@ -227,10 +228,8 @@ public class EditorPanel extends JPanel {
             if(currentTrack == null) {
                 String data = new MapCompressor().compress(canvas.getMap());
                 String name = JOptionPane.showInputDialog(getThis(),"WUTS THE NAME OF THIS TRACK?");
-                Track t = new Track(name, "fc", data, 7,
-                        new int[]{1000, 1000, 2, 10}, new String[]{"fc", "sum cunt"}, new long[]{10, 3300000},
-                        new int[]{0, 0, 0, 0, 3, 0, 0, 0, 0, 10, 10});
-                currentTrack = t;
+                Track track = new Track(name, "fc", data, TrackCategory.UNKNOWN);
+                currentTrack = track;
             }
 
             MapCompressor mc = new MapCompressor();
@@ -240,13 +239,9 @@ public class EditorPanel extends JPanel {
             String save = currentTrack.toString().replace("\t", "\n");
             File file = new File("tracks/custom/" + currentTrack.getName() + ".track");
 
-            PrintStream out = null;
-            try {
-                out = new PrintStream(new FileOutputStream(file, false));
+            try (PrintStream out = new PrintStream(new FileOutputStream(file, false))) {
                 out.print(save);
-            } catch (Exception ee) {
-            } finally {
-                if (out != null) out.close();
+            } catch (Exception ignored) {
             }
 
         }

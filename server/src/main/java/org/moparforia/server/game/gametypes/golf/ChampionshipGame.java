@@ -1,13 +1,13 @@
 package org.moparforia.server.game.gametypes.golf;
 
-import org.moparforia.shared.Track;
+import org.moparforia.shared.tracks.Track;
 import org.moparforia.server.game.Lobby;
 import org.moparforia.server.game.LobbyType;
 import org.moparforia.server.game.Player;
 import org.moparforia.server.game.gametypes.GolfGame;
-import org.moparforia.server.track.TrackManager;
+import org.moparforia.shared.tracks.filesystem.FileSystemTrackManager;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 
@@ -32,8 +32,8 @@ public class ChampionshipGame extends GolfGame {
         }
     }
 
-    public ArrayList<Track> initTracks() {
-        ArrayList<Track> tracks = TrackManager.getTrackSet(championshipId);
+    public List<Track> initTracks() {
+        List<Track> tracks = FileSystemTrackManager.getInstance().getTrackSet(championshipId);
         this.numberOfTracks = tracks.size(); // important we set this depending on set.
         return tracks;
     }

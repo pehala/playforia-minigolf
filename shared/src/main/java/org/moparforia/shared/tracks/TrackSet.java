@@ -1,6 +1,6 @@
-package org.moparforia.server.track;
+package org.moparforia.shared.tracks;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Playforia
@@ -10,12 +10,12 @@ public class TrackSet {
 
     private String name;
     private TrackSetDifficulty difficulty;
-    private ArrayList<String> filenames;
+    private List<Track> tracks;
 
-    public TrackSet(String name, TrackSetDifficulty difficulty, ArrayList<String> filenames) {
+    public TrackSet(String name, TrackSetDifficulty difficulty, List<Track> tracks) {
         this.name = name;
         this.difficulty = difficulty;
-        this.filenames = filenames;
+        this.tracks = tracks;
     }
 
     public String getName() {
@@ -26,8 +26,8 @@ public class TrackSet {
         return difficulty;
     }
 
-    public ArrayList<String> getFilenames() {
-        return filenames;
+    public List<Track> getTracks() {
+        return tracks;
     }
 
     public boolean equals(Object o) {
@@ -35,6 +35,6 @@ public class TrackSet {
             return false;
         }
         TrackSet t = (TrackSet) o;
-        return difficulty == t.difficulty && name.equals(t.name) && filenames.equals(t.filenames);
+        return difficulty == t.difficulty && name.equals(t.name) && tracks.equals(t.tracks);
     }
 }

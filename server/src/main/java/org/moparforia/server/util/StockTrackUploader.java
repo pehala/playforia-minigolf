@@ -1,12 +1,7 @@
 package org.moparforia.server.util;
 
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import org.moparforia.shared.Track;
-import org.moparforia.server.track.TrackCategory;
-import org.moparforia.server.track.TrackSet;
-import org.moparforia.server.track.TrackSetDifficulty;
+import org.moparforia.shared.tracks.Track;
+import org.moparforia.shared.tracks.TrackCategory;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -62,7 +57,7 @@ public class StockTrackUploader {
                         data = line.substring(2);
                     }
                 }
-                tracks.add(new Track(name, author, data, type.getId()));
+                tracks.add(new Track(name, author, data, type));
             }
         }
         //uploadTracks();

@@ -8,14 +8,20 @@ import org.moparforia.server.game.LobbyType;
 import org.moparforia.server.game.Player;
 import org.moparforia.server.net.Packet;
 import org.moparforia.server.net.PacketType;
-import org.moparforia.server.track.TrackManager;
 import org.moparforia.shared.Tools;
-import org.moparforia.shared.Track;
+import org.moparforia.shared.tracks.Track;
+import org.moparforia.shared.tracks.TrackManager;
+import org.moparforia.shared.tracks.filesystem.FileSystemTrackManager;
+import org.moparforia.shared.tracks.filesystem.FileSystemStatsManager;
+import org.moparforia.shared.tracks.stats.StatsManager;
+import org.moparforia.shared.tracks.stats.TrackStats;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 public abstract class GolfGame extends Game {
+    protected static final TrackManager manager = FileSystemTrackManager.getInstance();
+    protected static final StatsManager statsManager = FileSystemStatsManager.getInstance();
 
     public static final int STROKES_UNLIMITED = 0;
     public static final int STROKETIMEOUT_INFINITE = 0;
@@ -39,7 +45,7 @@ public abstract class GolfGame extends Game {
     protected int trackScoring;
     protected int trackScoringEnd;
     protected int numPlayers;
-    protected ArrayList<Track> tracks;
+    protected List<Track> tracks;
     protected int[] playerStrokes;
 
     protected int currentTrack = 0;
@@ -67,7 +73,7 @@ public abstract class GolfGame extends Game {
     }
 
 
-    public abstract ArrayList<Track> initTracks();
+    public abstract List<Track> initTracks();
 
     @Override
     public boolean handlePacket(Server server, Player player, Matcher message) {
@@ -112,20 +118,21 @@ public abstract class GolfGame extends Game {
 
     public void startGame() {
         writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "start")));
-        StringBuilder buff = new StringBuilder(); // STRING BUILDER IS BEING USEDS FAGGOTS
+        StringBuilder buff = new StringBuilder();
         for (int i = 0; i < getPlayers().size(); i++) {
             buff.append("t");
         }
         playStatus = buff.toString().replace("t", "f");
-
+        TrackStats track = statsManager.getStats(tracks.get(0));
         writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "resetvoteskip")));
-        writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "starttrack", buff.toString(), gameId, tracks.get(0))));
+        writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "starttrack", buff.toString(), gameId, track)));
         writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "startturn", 0)));
     }
 
     public void rateTrack(String rating) {
-        tracks.get(currentTrack).rate(rating);
+        statsManager.rate(getCurrentTrack(), Integer.parseInt(rating));
     }
+
 
     public void sendGameInfo(Player player) {
         Channel c = player.getChannel();
@@ -180,64 +187,12 @@ public abstract class GolfGame extends Game {
 
 
     protected void updateStats() {
+        getPlayers().stream()
+                .filter(p -> !p.hasSkipped())
+                .forEach(player -> {
+                    statsManager.addScore(getCurrentTrack(), player.getNick(), playerStrokes[getPlayerId(player)]);
+                });
 
-        int players = 0;
-        int strokes = 0;
-        for (Player p : getPlayers()) {
-            if (!p.hasSkipped()) {
-                players++;
-                strokes += playerStrokes[getPlayerId(p)];
-            }
-        }
-        if (players > 0) { // if someone didnt skip, update stats.
-            TrackManager.addStrokes(tracks.get(currentTrack), players, strokes);
-            checkRecord();
-        }
-
-        TrackManager.save(tracks.get(currentTrack));
-
-    }
-
-    protected boolean checkRecord() {
-        if (getLeadingPlayer().hasSkipped()) {
-            return false;
-        }
-
-        Track track = tracks.get(currentTrack);
-        if ("".equals(track.getFirstBestPlayer()) || track.getBestPar() > getLeadingPar()) { // first ever record OR beat previous
-            TrackManager.updateStats(track, getLeadingPlayer(), getLeadingPar(), true);
-            return true;
-        } else if (track.getBestPar() == getLeadingPar()) { // matched par, latest
-            TrackManager.updateStats(track, getLeadingPlayer(), getLeadingPar(), false);
-            return true;
-        }
-        return false;
-    }
-
-    protected Player getLeadingPlayer() {
-        return playerForId(getLeadingPlayerId());
-    }
-
-    protected int getLeadingPlayerId() {
-        int minValue = playerStrokes[0];
-        int id = 0;
-        for (int i = 1; i < playerStrokes.length; i++) {
-            if (playerStrokes[i] < minValue && !playerForId(id).hasSkipped()) {
-                minValue = playerStrokes[i];
-                id = i;
-            }
-        }
-        return id;
-    }
-
-    protected int getLeadingPar() {
-        int minValue = playerStrokes[0];
-        for (int i = 1; i < playerStrokes.length; i++) {
-            if (playerStrokes[i] < minValue) {
-                minValue = playerStrokes[i];
-            }
-        }
-        return minValue;
     }
 
     protected void nextTrack() {
@@ -246,7 +201,7 @@ public abstract class GolfGame extends Game {
         strokeCounter = 0;
         currentTrack++;
         if (currentTrack < tracks.size()) { // there is a next track
-            Track t = tracks.get(currentTrack);
+            TrackStats track = statsManager.getStats(tracks.get(currentTrack));
             StringBuilder buff = new StringBuilder();
             for (int i = 0; i < getPlayers().size(); i++) {
                 playerStrokes[i] = 0; // todo proper id's
@@ -255,7 +210,7 @@ public abstract class GolfGame extends Game {
             }
             playStatus = buff.toString().replace("t", "f");
             writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "resetvoteskip")));
-            writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "starttrack", buff.toString(), gameId, t)));
+            writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "starttrack", buff.toString(), gameId, track)));
             writeAll(new Packet(PacketType.DATA, Tools.tabularize("game", "startturn", getFirstPlayer())));
         } else {
             endGame();
@@ -285,7 +240,7 @@ public abstract class GolfGame extends Game {
                 numberOfSkippers++;
                 playerStrokes[getPlayerId(player)] = maxStrokes + 1;
             }
-            buff.append(playerStrokes[getPlayerId(player)] + "\t");
+            buff.append(playerStrokes[getPlayerId(player)]).append("\t");
         }
 
         if (needsChange && playerCount() > 1 && numberOfSkippers < playerCount()) {
@@ -307,4 +262,7 @@ public abstract class GolfGame extends Game {
                 waterEvent, collision, trackScoring, trackScoringEnd, getPlayers().size());
     }
 
+    private Track getCurrentTrack() {
+        return tracks.get(currentTrack);
+    }
 }

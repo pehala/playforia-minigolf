@@ -14,7 +14,9 @@ import org.moparforia.server.game.Lobby;
 import org.moparforia.server.game.LobbyType;
 import org.moparforia.server.game.Player;
 import org.moparforia.server.net.*;
-import org.moparforia.server.track.TrackManager;
+import org.moparforia.shared.tracks.TrackLoadException;
+import org.moparforia.shared.tracks.filesystem.FileSystemTrackManager;
+import org.moparforia.shared.tracks.filesystem.FileSystemStatsManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -152,10 +154,10 @@ public class Server implements Runnable {
     }
 
     public void start() {
-        //TrackStore.LoadTracks(); // gr8 piece of engineering right here!
         try {
-            new TrackManager().load();
-        } catch (IOException e) {
+            FileSystemTrackManager.getInstance().load();
+            FileSystemStatsManager.getInstance().load();
+        } catch (TrackLoadException | IOException e) {
             System.err.println("Unable to load tracks: " + e.getMessage());
             e.printStackTrace();
             return;
