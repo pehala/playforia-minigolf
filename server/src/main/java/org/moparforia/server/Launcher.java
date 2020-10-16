@@ -9,7 +9,10 @@ import java.util.concurrent.Callable;
         description = "Starts Minigolf Server",
         name = "server",
         mixinStandardHelpOptions = true,
-        versionProvider = ManifestVersionProvider.class
+        versionProvider = ManifestVersionProvider.class,
+        subcommands = {
+                Converter.class
+        }
 )
 public class Launcher implements Callable<Void> {
 
@@ -26,15 +29,9 @@ public class Launcher implements Callable<Void> {
 
     public static void main(String... args) {
         Launcher launcher = new Launcher();
-        try {
-            CommandLine.ParseResult parseResult = new CommandLine(launcher).parseArgs(args);
-            if (!CommandLine.printHelpIfRequested(parseResult)) {
-                launcher.call();
-            }
-        } catch (CommandLine.ParameterException ex) { // command line arguments could not be parsed
-            System.err.println(ex.getMessage());
-            ex.getCommandLine().usage(System.err);
-        }
+        new CommandLine(launcher)
+                .setCaseInsensitiveEnumValuesAllowed(true)
+                .execute(args);
     }
 
     @Override

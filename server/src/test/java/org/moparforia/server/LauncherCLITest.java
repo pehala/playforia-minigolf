@@ -32,7 +32,8 @@ class LauncherCLITest {
         launcher = spy(new Launcher());
         lenient().doReturn(mock(Server.class)).when(launcher).getServer(anyString(), anyInt());
 
-        cmd = new CommandLine(launcher).setCaseInsensitiveEnumValuesAllowed(true);
+        cmd = new CommandLine(launcher);
+        cmd.setCaseInsensitiveEnumValuesAllowed(true);
 
         stdOut = new StringWriter();
         stdErr = new StringWriter();
