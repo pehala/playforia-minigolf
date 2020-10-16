@@ -98,16 +98,6 @@
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongo-java-driver</artifactId>
-                <version>3.6.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mongodb.morphia</groupId>
-                <artifactId>morphia</artifactId>
-                <version>1.2.2</version>
-            </dependency>
-            <dependency>
                 <groupId>org.moparforia</groupId>
                 <artifactId>shared</artifactId>
                 <version>2.1.0.0-BETA</version>
@@ -135,6 +125,18 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>3.5.10</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.marschall</groupId>
+                <artifactId>memoryfilesystem</artifactId>
+                <version>2.1.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.softsmithy.lib</groupId>
+                <artifactId>softsmithy-lib-core</artifactId>
+                <version>2.1.1</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

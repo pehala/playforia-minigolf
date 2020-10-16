@@ -4,6 +4,8 @@
 
 package org.moparforia.editor;
 
+import org.moparforia.shared.tracks.TrackCategory;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -26,7 +28,7 @@ public class TrackPropertiesDialog extends JDialog {
 
     private void loadValues() {
         textTrackName.setText(((TrackEditor)getOwner()).getMapCanvas().getTrackName());
-        comboTrackCategory.setSelectedIndex(((TrackEditor)getOwner()).getMapCanvas().getTrackCategory() - 1);
+        comboTrackCategory.setSelectedIndex(TrackCategory.BASIC.getId());
     }
 
     private void okButtonActionPerformed(ActionEvent e) {

@@ -1,4 +1,4 @@
-package org.moparforia.server.track;
+package org.moparforia.shared.tracks;
 
 /**
  * Playforia
@@ -6,13 +6,19 @@ package org.moparforia.server.track;
  */
 public enum TrackCategory {
 
-    //UNKNOWN("?", -1), ALL("-", 0), BASIC("basic", 1), TRADITIONAL("traditional", 2), MODERN("modern", 3), HIO("hio", 4), SHORT("short", 5), LONG("long", 6), CUSTOM("custom", 7);
-    UNKNOWN("?", -1), ALL("-", 0), BASIC("basic", 1), TRADITIONAL("traditional", 2), MODERN("modern", 3), HIO("hio", 4), SHORT("short", 5), LONG("long", 6);
+    UNKNOWN("?", -1),
+    ALL("-", 0),
+    BASIC("basic", 1),
+    TRADITIONAL("traditional", 2),
+    MODERN("modern", 3),
+    HIO("hio", 4),
+    SHORT("short", 5),
+    LONG("long", 6);
 
     private final String dir;
     private final int id;
 
-    private TrackCategory(String dir, int id) {
+    TrackCategory(String dir, int id) {
         this.dir = dir;
         this.id = id;
     }

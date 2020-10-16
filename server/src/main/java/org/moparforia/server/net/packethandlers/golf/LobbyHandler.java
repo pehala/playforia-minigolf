@@ -7,11 +7,12 @@ import org.moparforia.server.game.Player;
 import org.moparforia.server.net.Packet;
 import org.moparforia.server.net.PacketHandler;
 import org.moparforia.server.net.PacketType;
-import org.moparforia.server.track.TrackManager;
-import org.moparforia.server.track.TrackSet;
 import org.moparforia.shared.Tools;
+import org.moparforia.shared.tracks.TrackManager;
+import org.moparforia.shared.tracks.TrackSet;
+import org.moparforia.shared.tracks.filesystem.FileSystemTrackManager;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,8 @@ import java.util.regex.Pattern;
  * 12.6.2013
  */
 public class LobbyHandler implements PacketHandler {
+    private static final TrackManager manager = FileSystemTrackManager.getInstance();
+
     @Override
     public PacketType getType() {
         return PacketType.DATA;
@@ -55,13 +58,13 @@ public class LobbyHandler implements PacketHandler {
             }
             lobby.addPlayer(player, Lobby.JOIN_TYPE_NORMAL);
         } else if (message.group(1).equals("tracksetlist")) {
-            ArrayList<TrackSet> trackSets = TrackManager.getTrackSets();
+            List<TrackSet> trackSets = manager.getTrackSets();
             String[][] tracksInfo = new String[trackSets.size()][11];
             for (int i = 0; i < trackSets.size(); i++) {
                 TrackSet trackSet = trackSets.get(i);
                 tracksInfo[i][0] = trackSet.getName();
                 tracksInfo[i][1] = String.valueOf(trackSet.getDifficulty().getId());
-                tracksInfo[i][2] = String.valueOf(trackSet.getFilenames().size());
+                tracksInfo[i][2] = String.valueOf(trackSet.getTracks().size());
                 for (int j = 3; j < 11; j++) {//todo track records
                     tracksInfo[i][j] = j % 2 == 0 ? "1" : "No one";
                 }

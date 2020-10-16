@@ -4,7 +4,10 @@
 
 package org.moparforia.editor;
 
-import org.moparforia.shared.Track;
+import org.moparforia.shared.tracks.Track;
+import org.moparforia.shared.tracks.TrackCategory;
+import org.moparforia.shared.tracks.filesystem.FileSystemTrackManager;
+import org.moparforia.shared.tracks.filesystem.TrackFileParser;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -15,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -185,25 +189,9 @@ public class TrackEditor extends JFrame implements IEditor {
         togglePencil.setSelected(true);
     }
 
-    public static final Track loadTrack(File f) throws IOException {
+    public static final Track loadTrack(Path path) throws IOException {
 
-        String name = null, author = null, data = null;
-        Scanner scanner = new Scanner(new FileInputStream(f));
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (line.startsWith("V ")) {
-                // hi
-            } else if (line.startsWith("S ")) {
-                // hi? get on it, watson
-            } else if (line.startsWith("A ")) {
-                author = line.substring(2);
-            } else if (line.startsWith("N ")) {
-                name = line.substring(2);
-            } else if (line.startsWith("T ")) {
-                data = line.substring(2);
-            }
-        }
-        return new Track(name, author, data, 7);
+        return TrackFileParser.parseTrack(path, TrackCategory.UNKNOWN);
     }
 
     private void menuNewActionPerformed(ActionEvent e) {
@@ -216,9 +204,9 @@ public class TrackEditor extends JFrame implements IEditor {
             int result = chooser.showOpenDialog(this);
             if (result != JFileChooser.CANCEL_OPTION) {
                 File f = chooser.getSelectedFile();
-                Track currentTrack = loadTrack(f);
+                Track currentTrack = loadTrack(f.toPath());
                 Map m = new MapDecompressor().decompress(currentTrack.getMap());
-                mapCanvas.updateProperties(currentTrack.getName(), currentTrack.getCategory());
+                mapCanvas.updateProperties(currentTrack.getName(), currentTrack.getCategory().getId());
                 mapCanvas.setMap(m);
             }
         } catch (Exception exp) {
@@ -241,7 +229,7 @@ public class TrackEditor extends JFrame implements IEditor {
             return;
         }
         String data = new MapCompressor().compress(mapCanvas.getMap());
-        Track t = new Track(mapCanvas.getTrackName(), "editor", data, 7);
+        Track track = new Track(mapCanvas.getTrackName(), "editor", data, TrackCategory.UNKNOWN);
 
         JFileChooser saver = new JFileChooser("tracks/custom/");
         saver.setFileFilter(new FileFilter() {
@@ -255,13 +243,13 @@ public class TrackEditor extends JFrame implements IEditor {
                 return "*.track";
             }
         });
-        saver.setSelectedFile(new File(t.getName().replaceAll(" ", "_")));
+        saver.setSelectedFile(new File(track.getName().replaceAll(" ", "_")));
         int result = saver.showSaveDialog(this);
 
         if (result == JFileChooser.CANCEL_OPTION) return;
 
-        t.setMap(data);
-        String save = t.toSaveString().replace("\t", "\n");
+        track.setMap(data);
+        String save = FileSystemTrackManager.convertTrack(track).replace("\t", "\n");
 
         PrintStream out = null;
         try {

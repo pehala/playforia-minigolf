@@ -1,16 +1,16 @@
 package org.moparforia.server.game.gametypes.golf;
 
-import org.moparforia.shared.Track;
+import org.moparforia.shared.tracks.Track;
 import org.moparforia.server.game.LobbyType;
 import org.moparforia.server.game.Player;
 import org.moparforia.server.game.gametypes.GolfGame;
 import org.moparforia.server.net.Packet;
 import org.moparforia.server.net.PacketType;
-import org.moparforia.server.track.TrackCategory;
-import org.moparforia.server.track.TrackManager;
+import org.moparforia.shared.tracks.TrackCategory;
+import org.moparforia.shared.tracks.filesystem.FileSystemTrackManager;
 import org.moparforia.shared.Tools;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * dual shizzle
@@ -35,8 +35,8 @@ public class DualGame extends GolfGame {
     }
 
     @Override
-    public ArrayList<Track> initTracks() {
-        return TrackManager.getRandomTracks(numberOfTracks, TrackCategory.getByTypeId(tracksType));
+    public List<Track> initTracks() {
+        return manager.getRandomTracks(numberOfTracks, TrackCategory.getByTypeId(tracksType));
     }
 
     @Override

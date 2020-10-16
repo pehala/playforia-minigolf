@@ -1,4 +1,4 @@
-package org.moparforia.server.track;
+package org.moparforia.shared.tracks;
 
 /**
  * Playforia

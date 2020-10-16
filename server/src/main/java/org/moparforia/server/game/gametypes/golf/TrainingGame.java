@@ -1,14 +1,14 @@
 package org.moparforia.server.game.gametypes.golf;
 
-import org.moparforia.shared.Track;
+import org.moparforia.shared.tracks.Track;
 import org.moparforia.server.game.Lobby;
 import org.moparforia.server.game.LobbyType;
 import org.moparforia.server.game.Player;
 import org.moparforia.server.game.gametypes.GolfGame;
-import org.moparforia.server.track.TrackCategory;
-import org.moparforia.server.track.TrackManager;
+import org.moparforia.shared.tracks.TrackCategory;
+import org.moparforia.shared.tracks.filesystem.FileSystemTrackManager;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * training init
@@ -31,7 +31,7 @@ public class TrainingGame extends GolfGame {
     }
 
     @Override
-    public ArrayList<Track> initTracks() {
-        return TrackManager.getRandomTracks(numberOfTracks, TrackCategory.getByTypeId(tracksType));
+    public List<Track> initTracks() {
+        return manager.getRandomTracks(numberOfTracks, TrackCategory.getByTypeId(tracksType));
     }
 }
